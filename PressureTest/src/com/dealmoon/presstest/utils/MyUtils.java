@@ -61,7 +61,7 @@ import org.bouncycastle.util.encoders.Base64;
  * @description:工具类
  */
 public class MyUtils {
-	private final static String url = "http://api2.test.dealmoon.net";
+	private final static String url = "http://api2.apps.dealmoon.com";
 
 	/**
 	 * 替换字符串中的空白字符,例如换行/空格/回车等
@@ -232,8 +232,7 @@ public class MyUtils {
 		// boundary就是request头和上传文件内容的分隔符
 		String BOUNDARY = "---------------------------123821742118716";
 		try {
-			urlStr = MyUtils.url + "/Post";
-			URL url = new URL(urlStr);
+			URL url = new URL(MyUtils.url + "/Post");
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
@@ -348,13 +347,12 @@ public class MyUtils {
 	 * @param jsonData requestData
 	 * @return responseData
 	 */
-	public static String sendPost(String url, String jsonData) {
+	public static String sendPost(String rurl, String jsonData) {
 		long startTime = System.currentTimeMillis(); // 获取开始时间
 		HttpURLConnection conn = null;
 		StringBuffer sbf = new StringBuffer();
 		try {
-			url = MyUtils.url;
-			URL realUrl = new URL(url);
+			URL realUrl = new URL(MyUtils.url);
 			// 开启http连接
 			conn = (HttpURLConnection) realUrl.openConnection();
 			conn.setDoInput(true);

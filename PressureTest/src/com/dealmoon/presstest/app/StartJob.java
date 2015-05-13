@@ -67,8 +67,12 @@ public class StartJob {
 		System.out.println("Executed " + metaData.getNumberOfJobsExecuted() + " jobs.");
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args){
 		StartJob start = new StartJob();
-		start.run();
+		try {
+			start.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

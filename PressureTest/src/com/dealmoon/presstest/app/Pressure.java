@@ -20,7 +20,7 @@ public class Pressure {
 
 	private static Logger logger = Logger.getLogger(Pressure.class);
 	private static Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
-	private static String url = "http://api2.test.dealmoon.net";
+	private static String url = "http://api2.apps.dealmoon.com";
 
 	//分类列表接口
 	public void categorylist() {
@@ -89,7 +89,7 @@ public class Pressure {
 	// 品牌列表
 	public void brandlist() {
 		List<String> reqJsons = (List<String>) reqData.get("brandlist");
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
+		String reqJson0 = "{" + reqJsons.get(1) + "}";
 		String response = MyUtils.sendPost(url, reqJson0);
 		logger.info(response);
 	}
@@ -97,7 +97,7 @@ public class Pressure {
 	//获取晒单列表
 	public void postgetlist() {
 		List<String> reqJsons = (List<String>) reqData.get("postgetlist");
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
+		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		String response = MyUtils.sendPost(url, reqJson0);
 		logger.info(response);
 	}
@@ -356,7 +356,7 @@ public class Pressure {
 	public void hashtagsearch() {
 		List<String> reqJsons = (List<String>) reqData.get("hashtagsearch");
 
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
+		String reqJson0 = "{" + reqJsons.get(1) + "}";
 		String response = MyUtils.sendPost(url, reqJson0);
 		logger.info(response);
 	}
@@ -369,7 +369,7 @@ public class Pressure {
 		List<Integer> messageList = MyUtils.getMessageList(url, token);
 		int size = messageList.size();
 		int messageId = 0;
-		if(size > 0){
+		if (size > 0) {
 			messageId = messageList.get(new Random().nextInt(size));
 		}
 		//删除消息
@@ -383,7 +383,6 @@ public class Pressure {
 	public void postaddfavorite() {
 		List<String> reqJsons = (List<String>) reqData.get("postaddfavorite");
 		String token = MyUtils.getRandomToken();
-
 		//随机获取一个最新的post
 		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
@@ -573,10 +572,5 @@ public class Pressure {
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		String response = MyUtils.sendPost(url, reqJson0);
 		logger.info(response);
-	}
-
-	public static void main(String[] args) {
-		Pressure p = new Pressure();
-		p.postaddfavorite();
 	}
 }
