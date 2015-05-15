@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
@@ -23,7 +22,7 @@ public class StartJob {
 	private static Map<String, String> config = PropertiesReader.getConfig();
 
 	public void run() throws Exception {
-		System.out.println("------------- 初始化 获得 Scheduler 对象 -------------");
+		System.out.println("------------- init Scheduler object -------------");
 
 		// 获得 Scheduler 对象   
 		SchedulerFactory sf = new StdSchedulerFactory();
@@ -39,29 +38,29 @@ public class StartJob {
 		// 真正执行的任务并不是Job接口的实例，而是用反射的方式实例化的一个JobDetail实例    
 		JobDetail job = newJob(MyJob.class).withIdentity("job1", "group1").build();
 
-		System.out.println("开始时间: " + sdf.format(startTime) + ",结束时间: " + sdf.format(endTime));
+		System.out.println("----------start_time: " + sdf.format(startTime) + ",end_time: " + sdf.format(endTime)+"-----------");
 
 		// 定义一个触发器，startAt方法定义了任务应当开始的时间 .即下一个整数分钟执行  
 		SimpleTrigger trigger = (SimpleTrigger) newTrigger().withIdentity("trigger1", "group1").startAt(startTime)
-				.endAt(endTime).withSchedule(simpleSchedule().withIntervalInSeconds(5).repeatForever()).build();
+				.endAt(endTime).withSchedule(simpleSchedule().withIntervalInSeconds(3).repeatForever()).build();
 
 		// 注册并进行调度    
 		Date ft = scheduler.scheduleJob(job, trigger);
 
 		// 启动  
 		scheduler.start();
-		System.out.println(" ----------------- 任务调度已经启动 -----------------");
+		System.out.println(" ----------------- job starting -----------------");
 
 		try {
 			//总时间加上 10秒
-			Thread.sleep(currentTime + runTime + 10000L);
+			Thread.sleep(runTime + 10000L);
 
 		} catch (Exception e) {
 		}
 
 		//调度器停止  
 		scheduler.shutdown(true);
-		System.out.println(" ----------------- 任务调度结束 -----------------");
+		System.out.println(" ----------------- job fishing -----------------");
 
 		SchedulerMetaData metaData = scheduler.getMetaData();
 		System.out.println("Executed " + metaData.getNumberOfJobsExecuted() + " jobs.");
