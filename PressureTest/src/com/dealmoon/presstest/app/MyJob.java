@@ -25,10 +25,11 @@ public class MyJob implements Job {
 		Map<String, String> inters = PropertiesReader.getInters();
 		List<Object> keys = PropertiesReader.getKeys();
 		Random rm = new Random();
+		int max = Integer.parseInt((String) keys.get(keys.size() - 1));
 		// 扫描一次配置文件N个接口,产生N个请求
 		for (int i = 0; i < keys.size(); i++) {
 			//随机数从1..sum之间产生
-			int number = rm.nextInt(keys.size() + 1);
+			int number = rm.nextInt(max + 1);
 			//遍历权值列表找到比随机数大的最小值,并把该值对应的接口名字作为请求的接口
 			for (int j = 0; j < keys.size(); j++) {
 				int key = Integer.parseInt((String) keys.get(j));

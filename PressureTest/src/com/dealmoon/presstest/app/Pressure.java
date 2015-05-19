@@ -18,29 +18,28 @@ import com.sun.jersey.core.util.Base64;
 
 public class Pressure {
 
-	private static Logger logger = Logger.getLogger(Pressure.class);
+	//private static Logger logger = Logger.getLogger(Pressure.class);
 	private static Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
-	private static String url = "http://api2.test.dealmoon.net";
 
 	//分类列表接口
 	public void categorylist() {
 		List<String> reqJsons = (List<String>) reqData.get("categorylist");
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//晒单信息接口
 	public void postinfo() {
 		List<String> reqJsons = (List<String>) reqData.get("postinfo");
 		// 随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, postId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取消息列表
@@ -48,8 +47,8 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("messagegetlist");
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(new Random().nextInt(3)) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取收藏的晒单的列表
@@ -57,8 +56,8 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("postgetfavoritelist");
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取用户喜欢的晒单的列表
@@ -70,8 +69,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceUserid(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	// 喜欢的品牌的列表
@@ -82,37 +81,37 @@ public class Pressure {
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceUserid(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	// 品牌列表
 	public void brandlist() {
 		List<String> reqJsons = (List<String>) reqData.get("brandlist");
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String reqJson0 = "{" + reqJsons.get(1) + "}";
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取晒单列表
 	public void postgetlist() {
 		List<String> reqJsons = (List<String>) reqData.get("postgetlist");
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String reqJson0 = "{" + reqJsons.get(0) + "}";
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//添加喜欢
 	public void postaddlike() {
 		List<String> reqJsons = (List<String>) reqData.get("postaddlike");
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, postId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//删除晒单评论
@@ -121,7 +120,7 @@ public class Pressure {
 		String token = MyUtils.getRandomToken();
 
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		//先添加一条评论 在删除
@@ -129,15 +128,15 @@ public class Pressure {
 		String addJson = "{" + token + _reqJsons.get(0) + "}";
 
 		addJson = MyUtils.replaceIdinBackCommand(addJson, postId);
-		String addResponse = MyUtils.sendPost(url, addJson);
+		String addResponse = MyUtils.sendPost(addJson);
 		//获取新添加的评论的id
 		int commentId = (int) JSONObject.fromObject(addResponse).getJSONObject("responseData").getJSONObject("comment")
 				.get("id");
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, commentId);
 		//发送删除平论的请求
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//删除晒单
@@ -159,15 +158,15 @@ public class Pressure {
 
 		fileMap.put("images", image_path1);
 		// 发送create post请求
-		String response1 = MyUtils.postUpload(url + "/Post", textMap, fileMap, addJson);
+		String response1 = MyUtils.postUpload(textMap, fileMap, addJson);
 		// 获取新创建的post的id
 		int postId = JSONObject.fromObject(response1).getJSONObject("responseData").getJSONObject("post").getInt("id");
 		// 构造删除该post的指令
 		String delJson = "{" + token + reqJsons.get(0) + "}";
 		delJson = MyUtils.replaceIdinBackCommand(delJson, postId);
 		// 发送删除该post的请求
-		String response = MyUtils.sendPost(url, delJson);
-		logger.info(response);
+		String response = MyUtils.sendPost(delJson);
+		//logger.debug(response);
 	}
 
 	//取消收藏晒单
@@ -175,7 +174,7 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("postdelfavorite");
 		String token = MyUtils.getRandomToken();
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		//随机取得一个post并添加收藏
@@ -183,13 +182,13 @@ public class Pressure {
 		String addJson = "{" + token + _reqJsons.get(0) + "}";
 		addJson = MyUtils.replaceIdinBackCommand(addJson, postId);
 		//发送收藏post的请求
-		MyUtils.sendPost(url, addJson);
+		MyUtils.sendPost(addJson);
 		//获取删除收藏的指令
 		String delJson = "{" + token + reqJsons.get(0) + "}";
 		delJson = MyUtils.replaceIdinBackCommand(delJson, postId);
 		//发送取消收藏的指令
-		String response = MyUtils.sendPost(url, delJson);
-		logger.info(response);
+		String response = MyUtils.sendPost(delJson);
+		//logger.debug(response);
 	}
 
 	//取消喜欢晒单
@@ -197,7 +196,7 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("postdellike");
 		String token = MyUtils.getRandomToken();
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		//随机取得一个post并添加喜欢
@@ -205,30 +204,30 @@ public class Pressure {
 		String addJson = "{" + token + _reqJsons.get(0) + "}";
 		addJson = MyUtils.replaceIdinBackCommand(addJson, postId);
 		//发送喜欢post的请求
-		MyUtils.sendPost(url, addJson);
+		MyUtils.sendPost(addJson);
 		//获取删除喜欢的指令
 		String delJson = "{" + token + reqJsons.get(0) + "}";
 		delJson = MyUtils.replaceIdinBackCommand(delJson, postId);
 		//发送取消喜欢的指令
-		String response = MyUtils.sendPost(url, delJson);
-		logger.info(response);
+		String response = MyUtils.sendPost(delJson);
+		//logger.debug(response);
 	}
 
 	//举报晒单
 	public void postreport() {
 		List<String> reqJsons = (List<String>) reqData.get("postreport");
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 		//查询post信息
-		String _response = MyUtils.getPostInfo(url, postId);
+		String _response = MyUtils.getPostInfo(postId);
 		//获取post的author的Id
 		int post_userId = JSONObject.fromObject(_response).getJSONObject("responseData").getJSONObject("post")
 				.getJSONObject("author").getInt("id");
 
 		String reqJson0 = "{" + MyUtils.getRandomToken(post_userId) + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//更新晒单
@@ -256,7 +255,7 @@ public class Pressure {
 		fileMap.put("images", image_path3);
 		fileMap.put("images", image_path4);
 		// 发送create post请求
-		String response1 = MyUtils.postUpload(url, textMap, fileMap, addJson);
+		String response1 = MyUtils.postUpload(textMap, fileMap, addJson);
 		// 获取新创建的post的id
 		int postId = JSONObject.fromObject(response1).getJSONObject("responseData").getJSONObject("post").getInt("id");
 		JSONArray images = JSONObject.fromObject(response1).getJSONObject("responseData").getJSONObject("post")
@@ -288,8 +287,8 @@ public class Pressure {
 		textMap1.put("requestData", reqJson);
 		fileMap1.put("images", image_path1);
 		// 返回修改的Post接口结构
-		String response = MyUtils.postUpload(url, textMap1, fileMap1, reqJson);
-		logger.info(response);
+		String response = MyUtils.postUpload(textMap1, fileMap1, reqJson);
+		//logger.debug(response);
 	}
 
 	//用户粉丝列表
@@ -299,8 +298,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//关注用户
@@ -315,8 +314,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//关注的用户的列表
@@ -326,21 +325,21 @@ public class Pressure {
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取晒单评论
 	public void postgetcomment() {
 		List<String> reqJsons = (List<String>) reqData.get("postgetcomment");
 		// 随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, postId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取推荐的tag
@@ -348,17 +347,17 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("hashtagrecommends");
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//搜索tag
 	public void hashtagsearch() {
 		List<String> reqJsons = (List<String>) reqData.get("hashtagsearch");
 
-		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(3)) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String reqJson0 = "{" + reqJsons.get(1) + "}";
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//删除消息
@@ -366,66 +365,65 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("messagedelete");
 		String token = MyUtils.getRandomToken();
 		//随机获取消息列表中的消息
-		List<Integer> messageList = MyUtils.getMessageList(url, token);
+		List<Integer> messageList = MyUtils.getMessageList(token);
 		int size = messageList.size();
 		int messageId = 0;
-		if(size > 0){
+		if (size > 0) {
 			messageId = messageList.get(new Random().nextInt(size));
 		}
 		//删除消息
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceMessageid(reqJson0, messageId);
-		String resposne = MyUtils.sendPost(url, reqJson0);
-		logger.info(resposne);
+		String resposne = MyUtils.sendPost(reqJson0);
+		//logger.debug(resposne);
 	}
 
 	//收藏晒单
 	public void postaddfavorite() {
 		List<String> reqJsons = (List<String>) reqData.get("postaddfavorite");
 		String token = MyUtils.getRandomToken();
-
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, postId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//添加评论
 	public void postaddcomment() {
 		List<String> reqJsons = (List<String>) reqData.get("postaddcomment");
 		//随机获取一个最新的post
-		List<Integer> postIds = MyUtils.getPostList(url, "new", 1, 20);
+		List<Integer> postIds = MyUtils.getPostList("new", 1, 20);
 		int postId = postIds.get(new Random().nextInt(postIds.size()));
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(new Random().nextInt(3)) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, postId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//Tag详情
 	public void taginfo() {
 		List<String> reqJsons = (List<String>) reqData.get("taginfo");
 		String reqJson0 = "{" + reqJsons.get(new Random().nextInt(6)) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//关注品牌
 	public void brandaddlike() {
 		List<String> reqJsons = (List<String>) reqData.get("brandaddlike");
 		// 随机获取一个品牌Id
-		List<Integer> brandIds = MyUtils.getBrandList(url);
+		List<Integer> brandIds = MyUtils.getBrandList();
 		int brandId = brandIds.get(new Random().nextInt(brandIds.size()));
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, brandId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//获取推送消息
@@ -435,8 +433,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceSince(reqJson0);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//收藏列表
@@ -445,8 +443,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceSince(reqJson0);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//用户信息
@@ -454,8 +452,8 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("Userinfo");
 
 		String reqJson0 = "{" + MyUtils.getRandomToken() + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//用户登录
@@ -476,8 +474,8 @@ public class Pressure {
 		}
 		reqJson1 = reqJson1.replace("\"email\":\"" + oldemail + "\",", "\"email\":\"" + info.get("email") + "\",")
 				.replace("\"password\":\"" + oldpassword + "\"", "\"password\":\"" + password + "\"");
-		String response = MyUtils.sendPost(url, reqJson1);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson1);
+		//logger.debug(response);
 	}
 
 	//用户登出  为了不影响测试  登出后立即登录
@@ -487,8 +485,8 @@ public class Pressure {
 		Map<String, String> info = MyUtils.getRandomUserInfo();
 		//用户登出
 		String reqJson0 = "{" + info.get("token") + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 
 		//为了不影响测试,登出后登录
 		List<String> userlogin = (List<String>) reqData.get("userlogin");
@@ -505,7 +503,7 @@ public class Pressure {
 		}
 		reqJson1 = reqJson1.replace("\"email\":\"" + oldemail + "\",", "\"email\":\"" + info.get("email") + "\",")
 				.replace("\"password\":\"" + oldpassword + "\"", "\"password\":\"" + password + "\"");
-		String response1 = MyUtils.sendPost(url, reqJson1);
+		String response1 = MyUtils.sendPost(reqJson1);
 	}
 
 	//查询用户信息
@@ -515,8 +513,8 @@ public class Pressure {
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//取消关注用户
@@ -534,36 +532,30 @@ public class Pressure {
 		String addJson = "{" + token + reqJson1.get(0) + "}";
 		addJson = MyUtils.replaceIdinBackCommand(addJson, userId);
 		// 发送关注用户的请求
-		MyUtils.sendPost(url, addJson);
+		MyUtils.sendPost(addJson);
 		//获取取消关注用户指令
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
 		reqJson0 = MyUtils.replaceIdinBackCommand(reqJson0, userId);
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
 
 	//发布晒单
 	public void postcreate() {
 		List<String> reqJsons = (List<String>) reqData.get("postcreate");
 		String token = MyUtils.getRandomToken();
-		String reqJson = "{" + token + reqJsons.get(4) + "}";
-
+		String reqJson = "{" + token + reqJsons.get(1) + "}";
 		// textMap用于存文本,fileMap用于存图片
 		Map<String, String> textMap = new HashMap<String, String>();
 		Map<String, String> fileMap = new HashMap<String, String>();
 
 		textMap.put("requestData", reqJson);
 		String image_path1 = "image/1.jpg";
-		String image_path2 = "image/2.jpg";
-		String image_path3 = "image/3.jpg";
-		String image_path4 = "image/4.jpg";
 		fileMap.put("images", image_path1);
-		fileMap.put("images", image_path2);
-		fileMap.put("images", image_path3);
-		fileMap.put("images", image_path4);
 
-		String response = MyUtils.postUpload(url, textMap, fileMap, reqJson);
-		logger.info(response);
+		String response = MyUtils.postUpload(textMap, fileMap, reqJson);
+		//logger.info(reqJson);
+		//logger.info(response);
 	}
 
 	// 推送的deal列表
@@ -571,12 +563,12 @@ public class Pressure {
 		List<String> reqJsons = (List<String>) reqData.get("dealsubscriptionmyAlerts");
 
 		String reqJson0 = "{" + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
-		logger.info(response);
+		String response = MyUtils.sendPost(reqJson0);
+		//logger.debug(response);
 	}
-
+	
 	public static void main(String[] args) {
 		Pressure p = new Pressure();
-		p.postaddfavorite();
+		p.postcreate();
 	}
 }

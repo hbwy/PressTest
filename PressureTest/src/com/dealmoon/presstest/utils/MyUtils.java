@@ -61,7 +61,6 @@ import org.bouncycastle.util.encoders.Base64;
  * @description:工具类
  */
 public class MyUtils {
-	private final static String url = "http://api2.test.dealmoon.net";
 
 	/**
 	 * 替换字符串中的空白字符,例如换行/空格/回车等
@@ -224,17 +223,15 @@ public class MyUtils {
 	 * @param requestData requestData
 	 * @return responseData
 	 */
-	public static String postUpload(String urlStr, Map<String, String> textMap, Map<String, String> fileMap,
-			String requestData) {
+	public static String postUpload(Map<String, String> textMap, Map<String, String> fileMap, String requestData) {
 		long startTime = System.currentTimeMillis(); // 获取开始时间
 		String res = null;
 		HttpURLConnection conn = null;
 		// boundary就是request头和上传文件内容的分隔符
 		String BOUNDARY = "---------------------------123821742118716";
 		try {
-			urlStr = MyUtils.url + "/Post";
-			URL url = new URL(urlStr);
-			conn = (HttpURLConnection) url.openConnection();
+			URL relUrl = new URL(PropertiesReader.getConfig().get("url") + "/Post");
+			conn = (HttpURLConnection) relUrl.openConnection();
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -348,13 +345,12 @@ public class MyUtils {
 	 * @param jsonData requestData
 	 * @return responseData
 	 */
-	public static String sendPost(String url, String jsonData) {
+	public static String sendPost(String jsonData) {
 		long startTime = System.currentTimeMillis(); // 获取开始时间
 		HttpURLConnection conn = null;
 		StringBuffer sbf = new StringBuffer();
 		try {
-			url = MyUtils.url;
-			URL realUrl = new URL(url);
+			URL realUrl = new URL(PropertiesReader.getConfig().get("url"));
 			// 开启http连接
 			conn = (HttpURLConnection) realUrl.openConnection();
 			conn.setDoInput(true);
@@ -429,7 +425,7 @@ public class MyUtils {
 	 * @param pageSize 页面大小
 	 * @return
 	 */
-	public static List<Integer> getPostList(String url, String type, int pageNum, int pageSize) {
+	public static List<Integer> getPostList(String type, int pageNum, int pageSize) {
 		Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
 		List<String> reqJsons = (List<String>) reqData.get("postgetlist");
 		List<Integer> ids = new ArrayList<Integer>();
@@ -445,7 +441,7 @@ public class MyUtils {
 		String commandInfo = JSONObject.fromObject(reqJson).getJSONObject("commandInfo").toString();
 		reqJson = reqJson.replace(commandInfo, "{" + "\"type\":\"" + type + "\",\"pageNum\":" + pageNum
 				+ ",\"pageSize\":" + pageSize + "}");
-		String response = MyUtils.sendPost(url, reqJson);
+		String response = MyUtils.sendPost(reqJson);
 		JSONArray array = JSONObject.fromObject(response).getJSONObject("responseData").getJSONArray("posts");
 		for (Iterator iterator = array.iterator(); iterator.hasNext();) {
 			JSONObject obj = (JSONObject) iterator.next();
@@ -460,7 +456,7 @@ public class MyUtils {
 	 * @param url
 	 * @param poatId
 	 */
-	public static String getPostInfo(String url, int postId) {
+	public static String getPostInfo(int postId) {
 		Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
 		List<String> reqJsons = (List<String>) reqData.get("postinfo");
 
@@ -468,7 +464,7 @@ public class MyUtils {
 		JSONObject obj = JSONObject.fromObject(reqJson0).getJSONObject("commandInfo");
 		reqJson0 = reqJson0.replace(obj.toString(), "{\"id\":" + postId + "}");
 
-		return MyUtils.sendPost(url, reqJson0);
+		return MyUtils.sendPost(reqJson0);
 	}
 
 	/**
@@ -543,7 +539,7 @@ public class MyUtils {
 		List<String> reqJsons = (List<String>) reqData.get("Userinfo");
 		String token = getRandomToken();
 		String reqJson0 = "{" + token + reqJsons.get(0) + "}";
-		String response = MyUtils.sendPost(url, reqJson0);
+		String response = MyUtils.sendPost(reqJson0);
 		JSONObject userInfo = JSONObject.fromObject(response).getJSONObject("responseData").getJSONObject("userInfo");
 		String id = userInfo.getString("id");
 		String name = userInfo.getString("name");
@@ -622,13 +618,13 @@ public class MyUtils {
 	 * @param url
 	 * @return
 	 */
-	public static List<Integer> getBrandList(String url) {
+	public static List<Integer> getBrandList() {
 		Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
 		List<String> reqJsons = (List<String>) reqData.get("brandlist");
 		List<Integer> ids = new ArrayList<Integer>();
 
 		String reqJson = "{" + reqJsons.get(1) + "}";
-		String response = MyUtils.sendPost(url, reqJson);
+		String response = MyUtils.sendPost(reqJson);
 		JSONArray array = JSONObject.fromObject(response).getJSONObject("responseData").getJSONArray("brands");
 
 		for (Iterator iterator = array.iterator(); iterator.hasNext();) {
@@ -644,12 +640,12 @@ public class MyUtils {
 	 * @param url
 	 * @return
 	 */
-	public static List<Integer> getMessageList(String url, String token) {
+	public static List<Integer> getMessageList(String token) {
 		Map<String, List<String>> reqData = PropertiesReader.getAppRequestData();
 		List<String> reqJsons = (List<String>) reqData.get("messagegetlist");
 		List<Integer> ids = new ArrayList<Integer>();
 		String reqJson = "{" + token + reqJsons.get(2) + "}";
-		String response = MyUtils.sendPost(url, reqJson);
+		String response = MyUtils.sendPost(reqJson);
 		JSONArray array = JSONObject.fromObject(response).getJSONObject("responseData").getJSONArray("messages");
 
 		for (Iterator iterator = array.iterator(); iterator.hasNext();) {
